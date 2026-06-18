@@ -65,7 +65,6 @@ impl From<FormatResponse> for FormatResultDto {
 #[derive(Debug, Deserialize)]
 pub struct AppConfigDto {
     pub shortcut: String,
-    pub auto_start: bool,
     pub close_to_tray: bool,
     pub theme: String,
     #[serde(default = "default_language")]
@@ -82,7 +81,6 @@ pub struct AppConfigDto {
 #[derive(Debug, Serialize)]
 pub struct AppConfigResponseDto {
     pub shortcut: String,
-    pub auto_start: bool,
     pub close_to_tray: bool,
     pub theme: String,
     pub language: String,
@@ -147,7 +145,6 @@ impl From<AppConfig> for AppConfigResponseDto {
     fn from(config: AppConfig) -> Self {
         AppConfigResponseDto {
             shortcut: config.shortcut,
-            auto_start: config.auto_start,
             close_to_tray: config.close_to_tray,
             theme: theme_to_string(&config.theme),
             language: language_to_string(&config.language),
@@ -173,7 +170,6 @@ impl From<AppConfigDto> for AppConfig {
         };
         let mut app_config = AppConfig {
             shortcut: dto.shortcut,
-            auto_start: dto.auto_start,
             close_to_tray: dto.close_to_tray,
             theme,
             language,

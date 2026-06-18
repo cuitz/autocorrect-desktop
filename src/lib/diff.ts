@@ -1,4 +1,4 @@
-export type DiffType = "equal" | "add" | "change";
+export type DiffType = "equal" | "add" | "delete" | "change";
 
 export interface DiffSegment {
   type: DiffType;
@@ -15,7 +15,7 @@ export function diffChars(original: string, formatted: string): DiffSegment[] {
   const newChars = [...formatted];
 
   const raw = hirschberg(oldChars, newChars);
-  return mergeOps(raw, newChars);
+  return mergeOps(raw, oldChars, newChars);
 }
 
 // ── Hirschberg: linear-space LCS → edit script ──
@@ -164,10 +164,11 @@ function normalizeOrder(raw: RawOp[]): RawOp[] {
   return out;
 }
 
-function mergeOps(rawIn: RawOp[], newChars: string[]): DiffSegment[] {
+function mergeOps(rawIn: RawOp[], oldChars: string[], newChars: string[]): DiffSegment[] {
   const raw = normalizeOrder(rawIn);
   const segments: DiffSegment[] = [];
   let i = 0;
+  let oldIdx = 0;
   let newIdx = 0;
 
   while (i < raw.length) {
@@ -175,6 +176,7 @@ function mergeOps(rawIn: RawOp[], newChars: string[]): DiffSegment[] {
       let j = i;
       while (j < raw.length && raw[j] === 0) j++;
       segments.push({ type: "equal", text: newChars.slice(newIdx, newIdx + (j - i)).join("") });
+      oldIdx += j - i;
       newIdx += j - i;
       i = j;
     } else if (raw[i] === 1) {
@@ -186,8 +188,10 @@ function mergeOps(rawIn: RawOp[], newChars: string[]): DiffSegment[] {
       }
       segments.push({ type: "add", text: buf.join("") });
     } else {
-      // Remove — may precede an add → merge into "change"
+      // Remove may precede an add, which is rendered as a replacement.
+      const removedStart = oldIdx;
       while (i < raw.length && raw[i] === -1) {
+        oldIdx++;
         i++;
       }
       let aCount = 0;
@@ -199,9 +203,24 @@ function mergeOps(rawIn: RawOp[], newChars: string[]): DiffSegment[] {
       }
       if (aCount > 0) {
         segments.push({ type: "change", text: newChars.slice(addStart, addStart + aCount).join("") });
+      } else {
+        const removed = oldChars.slice(removedStart, oldIdx).join("");
+        segments.push({ type: "delete", text: visibleDeletedText(removed) });
       }
     }
   }
 
   return segments;
+}
+
+function visibleDeletedText(text: string): string {
+  return [...text]
+    .map((char) => {
+      if (char === " ") return "␠";
+      if (char === "\t") return "⇥";
+      if (char === "\n") return "↵\n";
+      if (char === "\r") return "␍";
+      return char;
+    })
+    .join("");
 }

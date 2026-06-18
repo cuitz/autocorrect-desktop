@@ -109,7 +109,6 @@ impl FormatterRules {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AppConfig {
     pub shortcut: String,
-    pub auto_start: bool,
     pub close_to_tray: bool,
     pub theme: ThemeMode,
     #[serde(default)]
@@ -128,7 +127,6 @@ impl Default for AppConfig {
     fn default() -> Self {
         AppConfig {
             shortcut: "CommandOrControl+Shift+F".to_string(),
-            auto_start: false,
             close_to_tray: true,
             theme: ThemeMode::System,
             language: LanguageMode::ZhCn,

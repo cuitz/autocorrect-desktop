@@ -785,6 +785,15 @@ textarea, .selectable {
   border-radius: 2px;
 }
 
+.diff-delete {
+  background: color-mix(in srgb, var(--c-danger) 16%, transparent);
+  border-bottom: 2px solid var(--c-danger);
+  border-radius: 2px;
+  color: color-mix(in srgb, var(--c-danger) 78%, var(--c-text-primary));
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+}
+
 .diff-change {
   background: color-mix(in srgb, var(--c-warning) 22%, transparent);
   border-bottom: 2px solid var(--c-warning);
@@ -793,6 +802,10 @@ textarea, .selectable {
 
 .dark .diff-add {
   background: color-mix(in srgb, var(--c-success) 28%, transparent);
+}
+
+.dark .diff-delete {
+  background: color-mix(in srgb, var(--c-danger) 28%, transparent);
 }
 
 .dark .diff-change {

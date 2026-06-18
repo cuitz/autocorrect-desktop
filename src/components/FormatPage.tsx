@@ -316,6 +316,7 @@ export function FormatPage({ onNavigate }: FormatPageProps) {
                       data-diff-nav={seg.type !== "equal" ? "" : undefined}
                       className={
                         seg.type === "add" ? "diff-add"
+                        : seg.type === "delete" ? "diff-delete"
                         : seg.type === "change" ? "diff-change"
                         : ""
                       }

@@ -15,7 +15,6 @@ export interface FormatResult {
 
 export interface AppConfig {
   shortcut: string;
-  auto_start: boolean;
   close_to_tray: boolean;
   theme: string;
   language: string;

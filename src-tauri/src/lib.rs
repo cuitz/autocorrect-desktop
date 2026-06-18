@@ -70,10 +70,6 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
-        .plugin(tauri_plugin_autostart::init(
-            tauri_plugin_autostart::MacosLauncher::LaunchAgent,
-            Some(vec![]),
-        ))
         .setup(|app| {
             // --- System tray ---
             let app_config = config::app_config::AppConfig::load().unwrap_or_default();
@@ -124,7 +120,7 @@ pub fn run() {
                 })
                 .build(app)?;
 
-            // --- Global shortcut --- format clipboard & show window
+            // --- Global shortcut --- restore and focus the main window
             let shortcut_str = shortcut::normalize_shortcut(&app_config.shortcut);
             app.manage(AppRuntimeState::new(app_config.close_to_tray));
 
@@ -152,12 +148,6 @@ pub fn run() {
                         }
                     }
                 });
-            }
-
-            // --- Auto start ---
-            if app_config.auto_start {
-                use tauri_plugin_autostart::ManagerExt as AutostartManagerExt;
-                let _ = app.autolaunch().enable();
             }
 
             Ok(())

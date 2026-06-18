@@ -19,17 +19,7 @@ pub async fn save_config(app: tauri::AppHandle, config: AppConfigDto) -> Result<
     let app_config: AppConfig = config.into();
 
     // Apply runtime changes
-    // 1. Auto start
-    {
-        use tauri_plugin_autostart::ManagerExt as AutostartManagerExt;
-        if app_config.auto_start {
-            let _ = app.autolaunch().enable();
-        } else {
-            let _ = app.autolaunch().disable();
-        }
-    }
-
-    // 2. Re-register global shortcut
+    // 1. Re-register global shortcut
     {
         use crate::commands::clipboard::on_global_shortcut_pressed;
         use tauri_plugin_global_shortcut::{GlobalShortcutExt, ShortcutState};
@@ -70,7 +60,7 @@ pub async fn save_config(app: tauri::AppHandle, config: AppConfigDto) -> Result<
         .close_to_tray
         .store(app_config.close_to_tray, Ordering::Relaxed);
 
-    // 3. Update tray menu language if it changed
+    // 2. Update tray menu language if it changed
     if app_config.language != previous_config.language {
         update_tray_menu_language(&app, &app_config.language);
     }

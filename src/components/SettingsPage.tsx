@@ -269,12 +269,6 @@ export function SettingsPage({ onBack }: { onBack: () => void }) {
           </Field>
 
           <ToggleField
-            label={t("settings.autostart")}
-            checked={form.auto_start}
-            onChange={(v) => updateForm({ auto_start: v })}
-          />
-
-          <ToggleField
             label={t("settings.closeToTray")}
             checked={form.close_to_tray}
             onChange={(v) => updateForm({ close_to_tray: v })}

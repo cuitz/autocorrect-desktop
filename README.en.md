@@ -21,7 +21,7 @@ AutoCorrect Desktop is a local desktop client powered by the bundled [autocorrec
 
 - **Local instant formatting** - Paste or type text, format it in one click, then copy or clear the result. `Cmd/Ctrl + Enter` also formats the current input.
 - **Clipboard workflow** - Read text from the clipboard and write formatted output back to the clipboard.
-- **Global shortcut** - The default shortcut is `Cmd/Ctrl + Shift + F`, and custom shortcuts can be recorded from the Settings page.
+- **Global shortcut** - The default shortcut is `Cmd/Ctrl + Shift + F` to restore the main window, and custom shortcuts can be recorded from the Settings page.
 - **Enhanced history** - Only changed formatting results are saved. History supports search, result copy, restore to the main editor, detail view, and full clear.
 - **Bundled formatting engine** - The `autocorrect` Rust crate ships with the app, so no external command-line tool is required.
 - **Rule toggles** - Settings expose the main bundled autocorrect rules, including Chinese text spacing, punctuation width conversion, and halfwidth conversion.
@@ -120,7 +120,7 @@ src-tauri/src/                # Backend source
 ├── history_store/store.rs    # JSONL history storage
 ├── dto.rs                    # Data transfer objects
 ├── errors.rs                 # Shared app errors
-└── lib.rs                    # App setup, tray, shortcuts, and autostart
+└── lib.rs                    # App setup, tray, and shortcuts
 ```
 
 ## Configuration
