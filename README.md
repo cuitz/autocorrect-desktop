@@ -1,0 +1,177 @@
+<div align="center">
+
+# AutoCorrect Desktop
+
+**中文文本自动格式化桌面工具**
+
+[简体中文](./README.md) | [English](./README.en.md)
+
+[![Tauri](https://img.shields.io/badge/Tauri-v2-blue?logo=tauri)](https://v2.tauri.app/)
+[![React](https://img.shields.io/badge/React-19-61dafb?logo=react)](https://react.dev/)
+[![Rust](https://img.shields.io/badge/Rust-2021-000000?logo=rust)](https://www.rust-lang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
+</div>
+
+---
+
+基于内置 [autocorrect](https://github.com/huacnlee/autocorrect) Rust 引擎的桌面客户端，为中文文本提供本地即时排版格式化。它可以自动在中文与英文/数字之间添加空格，并修正全半角标点。
+
+## ✨ 功能特性
+
+- **本地即时格式化** — 粘贴或输入文本后，一键生成格式化结果，支持复制、清空和 `Cmd/Ctrl + Enter` 快捷格式化
+- **剪贴板工作流** — 支持从剪贴板读取文本，并将格式化结果写回剪贴板
+- **全局快捷键** — 默认 `Cmd/Ctrl + Shift + F`，支持在设置页录制自定义组合键
+- **历史记录增强** — 仅保存实际发生修改的记录，支持搜索、复制结果、恢复到主界面和清空历史
+- **内置格式化引擎** — `autocorrect` Rust crate 随应用打包，无需额外安装命令行工具
+- **规则开关同步** — 设置页可开关内置 autocorrect 的主要规则，包括中文混排空格、标点全角化和半角化
+- **系统集成** — 支持系统托盘、关闭窗口时最小化到托盘、开机自启动
+- **外观设置** — 支持浅色、深色和跟随系统主题
+
+## 📸 截图
+
+![AutoCorrect Desktop 主界面](./docs/images/main-window.png)
+
+## 🚀 安装与使用
+
+从 [Releases](../../releases) 下载适合你系统的安装包，安装后即可使用。格式化引擎已随应用打包，不需要单独安装 `autocorrect` CLI。
+
+## 🧑‍💻 开发
+
+### 开发环境
+
+- [Node.js](https://nodejs.org/) ≥ 18
+- [pnpm](https://pnpm.io/) ≥ 8
+- [Rust](https://www.rust-lang.org/tools/install) ≥ 1.77
+
+### 启动开发模式
+
+```bash
+# 克隆仓库
+git clone https://github.com/cuitz/autocorrect-desktop.git
+cd autocorrect-desktop
+
+# 安装前端依赖
+pnpm install
+
+# 启动开发模式
+pnpm tauri dev
+```
+
+### 本地构建
+
+```bash
+pnpm tauri build
+```
+
+构建产物位于 `src-tauri/target/release/bundle/`。
+
+## 🏗️ 技术架构
+
+```
+┌─────────────────────────────────────────────┐
+│                 Frontend                     │
+│   React 19 · TypeScript · Tailwind CSS 4    │
+│              Zustand · Vite 7                │
+├─────────────────────────────────────────────┤
+│               Tauri v2 Bridge               │
+├─────────────────────────────────────────────┤
+│                 Backend                      │
+│          Rust · FormatterEngine              │
+│        autocorrect Rust crate                │
+└─────────────────────────────────────────────┘
+```
+
+| 层级 | 技术 | 说明 |
+|------|------|------|
+| 前端 | React 19 + TypeScript | 组件化 UI，Zustand 状态管理 |
+| 样式 | Tailwind CSS 4 | CSS 变量驱动的 Stone/Indigo 设计令牌 |
+| 桥接 | Tauri v2 Commands | 类型安全的前后端通信 |
+| 后端 | Rust | 格式化引擎、配置管理、历史存储 |
+| 引擎 | autocorrect Rust crate | 内嵌在 Tauri 后端进程中执行 |
+
+### 项目结构
+
+```
+src/                          # 前端源码
+├── components/
+│   ├── FormatPage.tsx        # 格式化主界面（输入/输出分栏）
+│   ├── HistoryPage.tsx       # 历史记录
+│   └── SettingsPage.tsx      # 设置页面
+├── lib/commands.ts           # Tauri invoke 封装与类型定义
+└── stores/                   # Zustand 状态管理
+    ├── config.ts
+    ├── engine.ts
+    ├── format.ts
+    └── history.ts
+
+src-tauri/src/                # 后端源码
+├── commands/                 # Tauri Command 层
+│   ├── app_config.rs         # 配置加载/保存
+│   ├── clipboard.rs          # 剪贴板读写
+│   ├── engine_cmd.rs         # 引擎状态检测
+│   ├── format_cmd.rs         # 格式化文本
+│   └── history_cmd.rs        # 历史记录查询/清空
+├── config/app_config.rs      # AppConfig 结构与持久化
+├── engine/
+│   ├── types.rs              # 格式化请求/响应类型与 FormatterEngine trait
+│   └── embedded_autocorrect.rs # 内置 autocorrect 引擎实现
+├── services/formatter.rs     # 格式化服务
+├── history_store/store.rs    # JSONL 文件历史存储
+├── dto.rs                    # 前后端数据传输对象
+├── errors.rs                 # 统一错误类型
+└── lib.rs                    # 应用入口（托盘、快捷键、自启动）
+```
+
+## ⚙️ 配置
+
+应用配置文件位置：
+
+- **macOS**: `~/Library/Application Support/autocorrect-desktop/config.json`
+- **Windows**: `%APPDATA%/autocorrect-desktop/config.json`
+- **Linux**: `~/.local/share/autocorrect-desktop/config.json`
+
+历史记录存储为同目录下的 `history.jsonl`。
+
+### 格式化规则
+
+设置页的规则开关与内置 `autocorrect` 规则名一一对应：
+
+| 设置 | autocorrect 规则 |
+|------|------------------|
+| 中文与英文/数字间补空格 | `space-word` |
+| 标点符号旁补空格 | `space-punctuation` |
+| 括号旁补空格 | `space-bracket` |
+| 连字符旁补空格 | `space-dash` |
+| 反引号旁补空格 | `space-backticks` |
+| 美元符号旁补空格 | `space-dollar` |
+| 中文标点转全角 | `fullwidth` |
+| 全角字母和数字转半角 | `halfwidth-word` |
+| 英文语境标点转半角 | `halfwidth-punctuation` |
+| 清理全角标点旁空格 | `no-space-fullwidth` |
+| 清理全角引号旁空格 | `no-space-fullwidth-quote` |
+
+## 🔒 隐私说明
+
+AutoCorrect Desktop 是本地优先的桌面工具，不会上传你的文本内容。
+
+- 格式化在本机完成，应用通过内置 `autocorrect` Rust 引擎处理输入文本
+- 剪贴板读取和写入只在你主动使用相关操作或快捷键时触发
+- 历史记录只保存到本机的 `history.jsonl` 文件中，未修改的文本不会写入历史
+- 你可以在应用内清空历史记录，也可以删除应用配置目录中的历史文件
+- 项目本身不包含遥测、账号系统或远程同步逻辑
+
+更多细节见 [PRIVACY.md](./PRIVACY.md)。
+
+## 🛠️ 开发工具
+
+推荐 IDE 配置：
+
+- [VS Code](https://code.visualstudio.com/)
+- [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) 扩展
+- [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer) 扩展
+- [Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss) 扩展
+
+## 📄 License
+
+[MIT](./LICENSE)
