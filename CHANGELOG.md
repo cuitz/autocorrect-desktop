@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.2 - 2026-06-21
+
+### Changed
+
+- Redesigned the app logo with a simpler SVG mark and regenerated desktop icon assets.
+
 ## 0.1.1 - 2026-06-18
 
 ### Changed

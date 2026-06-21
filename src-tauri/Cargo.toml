@@ -1,6 +1,6 @@
 [package]
 name = "autocorrect-desktop"
-version = "0.1.1"
+version = "0.1.2"
 description = "AutoCorrect Desktop - Chinese text formatting tool"
 authors = ["cuitz"]
 edition = "2021"
